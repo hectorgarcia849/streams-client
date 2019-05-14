@@ -7,6 +7,7 @@ class GoogleAuth extends React.Component {
     componentDidMount() {
         // since load via index.html via script tag, it will be available in window at runtime.
         // client:auth2, is to load the Oauth2 library, we pass callback function, so when ready we can perform operations
+        // google library is very lean, and loads up the stated functionality
         window.gapi.load('client:auth2', () => {
             //initialize authentication client
             window.gapi.client.init({
@@ -14,6 +15,7 @@ class GoogleAuth extends React.Component {
                 scope: "email"
             }).then(() => {
                 this.auth = window.gapi.auth2.getAuthInstance();
+                // first check if user isSignedIn (ensures we move on from initial null state)
                 this.onAuthChange(this.auth.isSignedIn.get());
                 this.auth.isSignedIn.listen(this.onAuthChange);
             });
@@ -24,11 +26,15 @@ class GoogleAuth extends React.Component {
         // action creator depending on state
         console.log(isSignedIn);
         if (isSignedIn) {
-            this.props.signIn(this.auth.currentUser.get().getId());
+            let userId = this.auth.currentUser.get().getId();
+            this.props.signIn(userId);
         } else {
             this.props.signOut();
         }
     };
+
+
+    // with these action creators we can update the state in the store
 
     onSignInClick = () => {
         this.auth.signIn();
@@ -64,7 +70,9 @@ class GoogleAuth extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+    // we load in the current state of auth.isSignedIn from redux store
     return { isSignedIn: state.auth.isSignedIn };
 };
 
+// props gets selected state attributes and maps them to prop, action creators as functions
 export default connect(mapStateToProps, {signIn, signOut})(GoogleAuth);

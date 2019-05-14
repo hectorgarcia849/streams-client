@@ -15,6 +15,7 @@ export default (state=INITIAL_STATE, action) => {
         case FETCH_STREAM:
             return {...state, [action.payload.id]: action.payload };
         case FETCH_STREAMS:
+            // _.mapKeys(action.payload, 'id') creates an object from array using 'id' as keys
             return {...state, ..._.mapKeys(action.payload, 'id')};
         case EDIT_STREAM:
             // uses key interpolation syntax

@@ -7,7 +7,8 @@ import StreamForm from './StreamForm';
 class StreamEdit extends React.Component {
 
     componentDidMount() {
-        console.log(this.props.match.params.id);
+        // this is required in to handle the case of when user tries to access edit stream directly, that is the state is store is not loaded yet.
+        // So needs to be designed to work in isolation, fetch its own data
         this.props.fetchStream(this.props.match.params.id);
 
     }
@@ -35,7 +36,7 @@ class StreamEdit extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     // ownProps gets props that component will be initialized with, in this case
-    // because we are tracking browser history, we need to pull this out.
+    // because we are tracking browser history, we need to pull this out (note we get url info because this is being routed by react-router-dom
     // note need to navigate away from stream/edit/:id and back to page when testing
     // with React-Router each component needs to be designed to work in isolation (fetch its own data)
 
